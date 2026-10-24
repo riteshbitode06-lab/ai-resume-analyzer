@@ -58,10 +58,7 @@ export default function CareerRecommendations({
 
       <p style={styles.eyebrow}>CAREERLENS · YOUR NEXT STEP</p>
       <h1 style={styles.heading}>Explore your career options</h1>
-      <p style={styles.subtitle}>
-        Explore career paths based on your selected role and the skills
-        identified in your resume.
-      </p>
+      
 
       {detectedSkills.length > 0 && (
         <section style={styles.card}>
@@ -134,10 +131,7 @@ export default function CareerRecommendations({
         );
       })}
 
-      <p style={styles.disclaimer}>
-        These are rule-based career suggestions, not predictions from a
-        trained AI model.
-      </p>
+      
 
       <button style={styles.primary} onClick={onHome}>
         Analyze another resume <ArrowRight size={18} />

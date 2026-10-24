@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import Auth from './Auth';
+
 import {
   ArrowRight,
   ArrowUpRight,
@@ -45,9 +46,9 @@ const features = [
 ];
 
 const steps = [
-  ['Upload your resume', 'Add your resume as a PDF file.'],
-  ['Review your insights', 'See extracted skills and improvement areas.'],
-  ['Plan your next move', 'Explore roles and skills to learn next.']
+  ['Upload your resume'],
+  ['Review your insights'],
+  ['Plan your next move']
 ];
 
 export default function App() {
@@ -63,43 +64,30 @@ export default function App() {
   const [role, setRole] = useState('Not sure yet');
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-const [authLoading, setAuthLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
 
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    setUser(currentUser);
-    setAuthLoading(false);
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
 
-  return unsubscribe;
-}, []);
+    return unsubscribe;
+  }, []);
 
-const handleLogout = async () => {
-  try {
-    await signOut(auth);
-    setPage('home');
-    setSelectedFile(null);
-    setAnalysisData(null);
-    setError('');
-    setNotice('');
-  } catch (err) {
-    setError('Logout failed. Please try again.');
-    console.error(err);
-  }
-};
-if (authLoading) {
-  return (
-    <div style={{ padding: 40, textAlign: 'center' }}>
-      Loading CareerLens...
-    </div>
-  );
-}
-
-if (!user) {
-  return (
-    <Auth onLoginSuccess={(loggedInUser) => setUser(loggedInUser)} />
-  );
-}
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setPage('home');
+      setSelectedFile(null);
+      setAnalysisData(null);
+      setError('');
+      setNotice('');
+    } catch (err) {
+      setError('Logout failed. Please try again.');
+      console.error(err);
+    }
+  };
 
   const scrollUpload = () => {
     setMenuOpen(false);
@@ -135,14 +123,18 @@ if (!user) {
     ) {
       setSelectedFile(null);
       setAnalysisData(null);
-      setError('Please choose a PDF file. Other file types are not supported yet.');
+      setError(
+        'Please choose a PDF file. Other file types are not supported yet.'
+      );
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
       setSelectedFile(null);
       setAnalysisData(null);
-      setError('Your PDF is larger than 10 MB. Please choose a smaller file.');
+      setError(
+        'Your PDF is larger than 10 MB. Please choose a smaller file.'
+      );
       return;
     }
 
@@ -204,6 +196,22 @@ if (!user) {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div style={{ padding: 40, textAlign: 'center' }}>
+        Loading CareerLens...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Auth
+        onLoginSuccess={(loggedInUser) => setUser(loggedInUser)}
+      />
+    );
+  }
 
   // Results page
   if (page === 'results') {
@@ -280,6 +288,7 @@ if (!user) {
           <span className="brand-mark">
             <BrainCircuit size={22} />
           </span>
+
           <span>
             Career<span className="accent">Lens</span>
           </span>
@@ -289,32 +298,48 @@ if (!user) {
           className="menu-button"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
+          type="button"
         >
           {menuOpen ? <X /> : <Menu />}
         </button>
 
         <nav className={menuOpen ? 'nav nav-open' : 'nav'}>
-          <a href="#features" onClick={() => setMenuOpen(false)}>
+          <a
+            href="#features"
+            onClick={() => setMenuOpen(false)}
+          >
             Features
           </a>
 
-          <a href="#how" onClick={() => setMenuOpen(false)}>
+          <a
+            href="#how"
+            onClick={() => setMenuOpen(false)}
+          >
             How it works
           </a>
 
-          <a href="#about" onClick={() => setMenuOpen(false)}>
+          <a
+            href="#about"
+            onClick={() => setMenuOpen(false)}
+          >
             About
           </a>
 
-          <button className="button dark small" onClick={scrollUpload}>
+          <button
+            className="button dark small"
+            onClick={scrollUpload}
+            type="button"
+          >
             Analyze my resume <ArrowRight size={15} />
           </button>
+
           <button
-  className="button dark small"
-  onClick={handleLogout}
->
-  Logout
-</button>
+            className="button dark small"
+            onClick={handleLogout}
+            type="button"
+          >
+            Logout
+          </button>
         </nav>
       </header>
 
@@ -333,29 +358,16 @@ if (!user) {
               <span className="gradient">Your next move.</span>
             </h1>
 
-            <p className="hero-description">
-              Turn your resume into a clearer career plan. Discover your skills,
-              spot opportunities to improve, and explore roles that fit your goals.
-            </p>
+           
 
             <div className="hero-actions">
-              <button className="button primary" onClick={scrollUpload}>
+              <button
+                className="button primary"
+                onClick={scrollUpload}
+                type="button"
+              >
                 Analyze my resume <ArrowRight size={17} />
               </button>
-
-              <a className="text-link" href="#how">
-                See how it works ↓
-              </a>
-            </div>
-
-            <div className="trust">
-              <span>
-                <ShieldCheck size={16} /> Privacy-minded design
-              </span>
-
-              <span>
-                <FileText size={16} /> PDF resume support
-              </span>
             </div>
           </div>
 
@@ -363,9 +375,7 @@ if (!user) {
             <div className="orb orb1"></div>
             <div className="orb orb2"></div>
 
-            <div className="float-tag tag1">
-              <Sparkles size={15} /> Career insights
-            </div>
+            
 
             <div className="resume-card">
               <div className="resume-head">
@@ -384,21 +394,23 @@ if (!user) {
               <div className="rule"></div>
               <div className="mini-heading">SKILLS OVERVIEW</div>
 
-              {['Communication', 'Problem solving', 'Technical skills'].map(
-                (skill, index) => (
-                  <div className="skill" key={skill}>
-                    <span>{skill}</span>
+              {[
+                'Communication',
+                'Problem solving',
+                'Technical skills'
+              ].map((skill, index) => (
+                <div className="skill" key={skill}>
+                  <span>{skill}</span>
 
-                    <div className="track">
-                      <i
-                        style={{
-                          width: ['86%', '72%', '64%'][index]
-                        }}
-                      />
-                    </div>
+                  <div className="track">
+                    <i
+                      style={{
+                        width: ['86%', '72%', '64%'][index]
+                      }}
+                    />
                   </div>
-                )
-              )}
+                </div>
+              ))}
 
               <div className="rule"></div>
 
@@ -409,49 +421,31 @@ if (!user) {
 
                 <div>
                   <b>Your next step</b>
-                  <small>Identify skills for your target role</small>
+                  <small>
+                    Identify skills for your target role
+                  </small>
                 </div>
 
-                <ArrowUpRight className="insight-arrow" size={17} />
+                <ArrowUpRight
+                  className="insight-arrow"
+                  size={17}
+                />
               </div>
             </div>
 
-            <div className="float-tag tag2">
-              <Check size={16} /> A plan built around you
-            </div>
+           
 
-            <div className="visual-caption">
-              A clearer picture of where you can go next.
-            </div>
-          </div>
-        </section>
-
-        <section className="stats wrap">
-          <div>
-            <b>01</b>
-            <span>Upload your resume</span>
-          </div>
-
-          <div>
-            <b>02</b>
-            <span>Understand your skills</span>
-          </div>
-
-          <div>
-            <b>03</b>
-            <span>Explore your next step</span>
+            
           </div>
         </section>
 
         <section className="features wrap" id="features">
           <div className="section-heading">
-            <div className="eyebrow">BUILT FOR YOUR NEXT CHAPTER</div>
+            
+
             <h2>More than a resume check.</h2>
 
-            <p>
-              A practical starting point for making your next career decision
-              with confidence.
-            </p>
+            
           </div>
 
           <div className="feature-grid">
@@ -467,17 +461,6 @@ if (!user) {
 
                 <h3>{title}</h3>
                 <p>{text}</p>
-
-                <a
-                  href="#upload"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    scrollUpload();
-                  }}
-                  className="feature-link"
-                >
-                  Explore feature <ArrowUpRight size={15} />
-                </a>
               </article>
             ))}
           </div>
@@ -486,9 +469,13 @@ if (!user) {
         <section className="how" id="how">
           <div className="wrap how-inner">
             <div className="section-heading left">
-              <div className="eyebrow">A SIMPLE THREE-STEP FLOW</div>
+              <div className="eyebrow">
+                A SIMPLE THREE-STEP FLOW
+              </div>
+
               <h2>From resume to next steps.</h2>
-              <p>No complicated process. Start with what you already have.</p>
+
+             
             </div>
 
             <div className="steps">
@@ -503,7 +490,11 @@ if (!user) {
           </div>
         </section>
 
-        <section className="upload wrap" id="upload" ref={uploadRef}>
+        <section
+          className="upload wrap"
+          id="upload"
+          ref={uploadRef}
+        >
           <div className="upload-copy">
             <div className="eyebrow">
               <i /> START HERE
@@ -511,24 +502,9 @@ if (!user) {
 
             <h2>Ready to take a closer look?</h2>
 
-            <p>
-              Upload your resume PDF to extract skills, check your resume score,
-              and identify skills to improve for your selected career role.
-            </p>
+            
 
-            <ul>
-              <li>
-                <Check size={17} /> PDF files up to 10 MB
-              </li>
-
-              <li>
-                <Check size={17} /> Choose a career direction
-              </li>
-
-              <li>
-                <Check size={17} /> Analysis using your project backend
-              </li>
-            </ul>
+           
           </div>
 
           <div className="upload-panel">
@@ -548,7 +524,9 @@ if (!user) {
               className="hidden"
               type="file"
               accept="application/pdf,.pdf"
-              onChange={(event) => chooseFile(event.target.files?.[0])}
+              onChange={(event) =>
+                chooseFile(event.target.files?.[0])
+              }
             />
 
             <button
@@ -625,49 +603,27 @@ if (!user) {
               className="button primary full"
               onClick={analyze}
               disabled={loading}
+              type="button"
             >
               {loading ? 'Analyzing resume...' : 'Continue'}
               {!loading && <ArrowRight size={17} />}
             </button>
 
-            <p className="privacy">
-              <ShieldCheck size={14} />
-              Your resume is sent to your local backend for analysis.
-            </p>
+            
           </div>
         </section>
 
-        <section className="closing wrap" id="about">
-          <div className="grad-icon">
-            <GraduationCap size={25} />
-          </div>
-
-          <div>
-            <h2>Your career journey is still being written.</h2>
-            <p>
-              Use your skills as a starting point, and your next step as a plan.
-            </p>
-          </div>
-
-          <button className="button dark" onClick={scrollUpload}>
-            Get started <ArrowRight size={16} />
-          </button>
-        </section>
+        
       </main>
 
       <footer className="footer wrap">
-        <a className="brand footer-brand" href="#home">
-          <span className="brand-mark">
-            <BrainCircuit size={20} />
-          </span>
+        
 
-          <span>
-            Career<span className="accent">Lens</span>
-          </span>
-        </a>
+        <p>
+          AI-Powered Resume Analyzer &amp; Career Recommendation System
+        </p>
 
-        <p>AI-Powered Resume Analyzer &amp; Career Recommendation System</p>
-        <small>Student project · Built for learning and career guidance</small>
+        
       </footer>
     </div>
   );
